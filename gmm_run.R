@@ -1,5 +1,5 @@
 
-em_run = function(y, k, threshhold, max_iter) {
+gmm_run = function(y, k, threshhold, max_iter) {
   # DESCRIPTION: 
   # runs GMM alrogithm on simulated data
   
@@ -13,9 +13,10 @@ em_run = function(y, k, threshhold, max_iter) {
   n = dim(y)[1]/k
   m = dim(y)[2]
   mus = replicate(k, runif(m, -8, 8))
+  if (m == 1) {mus = t(mus)}
   sigmas = vector(mode = "list", length=k)
   for (i in 1:k) {
-    sigmas[[i]] = diag(runif(m, 2, 5))
+    sigmas[[i]] = diag(diag(matrix(runif(m, 2, 5), m, m)))
   }
   converged = 0
   ll = matrix(0, max_iter, 1)

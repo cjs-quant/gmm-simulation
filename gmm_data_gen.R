@@ -1,5 +1,5 @@
 
-em_data_gen = function(k, n, m) {
+gmm_data_gen = function(k, n, m) {
   # DESCRIPTION: 
   # randomly generates data for GMM algorithm
   
@@ -10,9 +10,10 @@ em_data_gen = function(k, n, m) {
   
   # mean/variance ranges
   mus = replicate(k, runif(m, -8, 8))
+  if (m == 1) {mus = t(mus)}
   sigmas = vector(mode = "list", length=k)
   for (i in 1:k) {
-    sigmas[[i]] = diag(runif(m, 2, 5))
+    sigmas[[i]] = diag(diag(matrix(runif(m, 2, 5), m, m)))
   }
   
   # compute draws
