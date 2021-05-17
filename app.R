@@ -23,8 +23,7 @@ ui = pageWithSidebar(
   sidebarPanel(withMathJax(),
                sliderInput("k1", "Gaussians to Generate:", min=1, max=5, step=1, value=2),
                sliderInput("k2", "Gaussians to Estimate:", min=1, max=5, step=1, value=2),
-               sliderInput("n", "Observations per Gaussian:", min=25, max=250, value=100),
-               sliderInput("threshhold", "Likelihood-Threshhold:", min = 0.00001, max = 0.1, value=0.01)
+               sliderInput("n", "Observations per Gaussian:", min=25, max=250, value=100)
   ),
   
   # main panel for outputs
@@ -42,7 +41,7 @@ server = function(session, input, output) {
   sigmas = reactive({draws()$sigmas})
   
   # run GMM
-  results = reactive({gmm_run(y(), input$k2, input$threshhold, 100)})
+  results = reactive({gmm_run(y(), input$k2, 0.01, 100)})
   mus_hat = reactive({results()$mus})
   sigmas_hat = reactive({results()$sigmas})
   
@@ -64,11 +63,15 @@ server = function(session, input, output) {
   output$note = renderUI({
     tagList("This simulation demonstrates the Gaussian Mixture Model (GMM) in two dimensions.
             The code itself works in n dimensions, but the simulation here is presented in 2
-            dimensions for exposition. Simulation author: Christopher Simard, contact:", chris_email,
+            dimensions for exposition. The model is estimated with the expectation-maximization 
+            (EM) algorigm. Simulation author: Christopher Simard, contact:", chris_email,
             ". The source code for this simulation can be found", github, 
             "The views expressed here are our own and do not necessarily 
             represent the views of the Federal Reserve Bank of New York or the Federal Reserve System.",
-            tags$br(), tags$br(), "Notes: [to do]")
+            tags$br(), tags$br(), "Notes: (1) Gaussians are generated independently of each other, 
+            so the covariances between clusters are zero. (2) Model is initialized with random uniform
+            means and variances. It may take a number of runs for the model to estimate suitable 
+            gaussians. (3) Ellipses are plotted with 95% confidence.")
   })
   
 }
